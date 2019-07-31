@@ -7,7 +7,7 @@ var cheerio = require('cheerio');
 
 var db = require('./models');
 
-var PORT = 3000;
+var PORT = 1348;
 
 var app = express();
 
@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 app.use(express.static('public'));
 
-mongoose.connect('monogodb://localhost/unit18Populator', {newUrlParser: true});
+mongoose.connect('monogodb://localhost/unit18Populator', {newUrlParser: false});
 
 // ROUTES
 
@@ -26,14 +26,14 @@ app.get("/scrape", function(req, res){
     axios.get('http://www.newyorktimes.com/').then(function(response){
         var $ = cheerio.load(response.data);
 
-        $("h2").each(function(i, element){
+        $("article h2").each(function(i, element){
             var result  =  {};
 
             result.title =$(this)
-             .children('a')
+             .children('p')
              .text();
             result.link  = $(this)
-              .children('a')
+              .children('p')
               .attr("href");
               
            db.Article.create(result)
@@ -44,7 +44,7 @@ app.get("/scrape", function(req, res){
                 console.log(err);
             });
         }); 
-        res.send('Scrap Complete');
+        res.send('Scrape Complete');
         });
     });
 
@@ -63,3 +63,34 @@ app.get("/scrape", function(req, res){
         app.listen(PORT, function(){
             console.log("App running on  port " + PORT + "!")
         });
+
+    // ROUTE for getting article by id
+
+    app.get("/articles/:id", function(req, res){
+        db.Article.findOne({_id: req.params.id})
+
+        .populate('note')
+        .then(function(dbArticle){
+            res.json(dbArticle);
+        })
+        .catch(function(err){
+            res.json(err);
+        });
+    });
+    // save/update article associated with a note
+    app.post('.articles/:id', function(req, res){
+        db.Note.create(req.body)
+        .then(function(dbNote){
+            return db.Article.findOneAndUpdateOne({_id: req.params.id}, { new: true});
+        })
+        .then(function(dbArticle){
+            res.json(dbArticle);
+        })
+        .catch(function(err){
+            res.json(err);
+        });
+    });
+
+    app.listen(PORT, function(){
+        console.log("Running on port" + PORT + "!");
+    });
