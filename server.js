@@ -1,11 +1,11 @@
-var express  = require('express');
-var logger = require('morgan');
-var mongoose = require('mongoose');
+var express  = require("express");
+var logger = require("morgan");
+var mongoose = require("mongoose");
 
-var  axios = require('axios');
-var cheerio = require('cheerio');
+var  axios = require("axios");
+var cheerio = require("cheerio");
 
-var db = require('./models');
+var db = require("./models");
 
 var PORT = 1348;
 
@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 app.use(express.static('public'));
 
-mongoose.connect('monogodb://localhost/unit18Populator', {useNewUrlParser: true});
+mongoose.connect('monogodb://localhost/', {useNewUrlParser: true});
 
 // ROUTES
 
@@ -58,10 +58,6 @@ app.get("/scrape", function(req, res){
           .catch(function(err){
               res.json(err);
           });
-        });
-
-        app.listen(PORT, function(){
-            console.log("App running on  port " + PORT + "!")
         });
 
     // ROUTE for getting article by id
