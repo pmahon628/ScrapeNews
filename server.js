@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 app.use(express.static('public'));
 
-mongoose.connect('monogodb://localhost/unit18Populator', {newUrlParser: false});
+mongoose.connect('monogodb://localhost/unit18Populator', {useNewUrlParser: true});
 
 // ROUTES
 
