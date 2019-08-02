@@ -30,7 +30,8 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/nytimes";
 app.get("/scrape", function(req, res){
 
     axios.get('http://www.newyorktimes.com/').then(function(response){
-        var $ = cheerio.load(response.data);
+       
+        var $ = cheerio.load(html);
 
         $("article h2").each(function(i, element){
             var result  =  {};
