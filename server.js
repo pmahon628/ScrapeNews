@@ -7,7 +7,7 @@ var cheerio = require("cheerio");
 
 var db = require("./models");
 
-var PORT = 1348;
+var PORT = 666;
 
 var app = express();
 
@@ -16,7 +16,13 @@ app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 app.use(express.static('public'));
 
-mongoose.connect('monogodb://localhost/', {useNewUrlParser: true});
+// mongoose.connect('monogodb://localhost:666/nytimes', {useNewUrlParser: true}) 
+
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/nytimes";
+
+  // Connect to the Mongo DB
+   mongoose.connect(MONGODB_URI);
+   mongoose.connect(MONGODB_URI, {useNewUrlParser:true});
 
 // ROUTES
 
@@ -88,5 +94,5 @@ app.get("/scrape", function(req, res){
     });
 
     app.listen(PORT, function(){
-        console.log("Running on port" + PORT + "!");
+        console.log("Running on port: " + PORT + "!");
     });
